@@ -1,0 +1,17 @@
+void keyPressed() {
+  if (keyCode == LEFT) {
+    ship.moveLeft = true;
+  } else if (keyCode == RIGHT) {
+    ship.moveRight = true;
+  } else if (keyCode == ' ') {
+    
+  }
+}
+
+void keyReleased() {
+  if (keyCode == LEFT) {
+    ship.moveLeft = false;
+  } else if (keyCode == RIGHT) {
+    ship.moveRight = false;
+  }
+}
