@@ -1,0 +1,20 @@
+Ship ship;
+ArrayList <Bullet> bullets = new ArrayList <Bullet>();
+
+void setup() {
+  ship = new Ship(width/2);
+  size(1000, 700);
+}
+
+void draw() {
+  background(0);
+  ship.drawShip();
+  ship.move();
+  drawBullets();
+}
+
+void drawBullets() {
+  for (Bullet b: bullets) {
+    b.drawBullet();
+  }
+}
