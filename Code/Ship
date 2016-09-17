@@ -8,6 +8,7 @@ public class Ship {
   float ht3 = 4*ht1/9;
   boolean moveLeft = false;
   boolean moveRight = false;
+  boolean canShoot = true;
 
   Ship(float x) {
     this.x = x;
@@ -48,5 +49,7 @@ public class Ship {
   }
 
   void shoot() {
+    bullets.add(new Bullet(x));
+    canShoot = false;
   }
 }
