@@ -1,7 +1,10 @@
 public class Bullet {
   float x; 
   float y = ship.getY();
-  float size = 5;
+  float wd = 3;
+  float ht = 3*wd;
+  float vy = -5;
+  
   Bullet(float x) {
     this.x = x; 
   }
@@ -9,6 +12,7 @@ public class Bullet {
   void drawBullet() {
     noStroke();
     fill(255);
-    rect(x, y, size, size);
+    rect(x, y - ht/2, wd, ht);
+    y += vy;
   }
 }
