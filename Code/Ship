@@ -1,0 +1,52 @@
+public class Ship {
+  float x;
+  float vx = 0;
+  float shipWd = width/15; // widest part of ship
+  float y = height - 60;
+  float ht1 = height/70;
+  float ht2 = 2*ht1/3;
+  float ht3 = 4*ht1/9;
+  boolean moveLeft = false;
+  boolean moveRight = false;
+
+  Ship(float x) {
+    this.x = x;
+  }
+
+  void drawShip() {
+    rectMode(CENTER);
+    stroke(255);
+    fill(255);
+    // drawing the ship object with three tiers and a triangle on top
+    rect(x, y, shipWd, ht1);
+    rect(x, y - ht2, 2*shipWd/3, ht2);
+    rect(x, y - ht2 - ht3, 4*shipWd/9, ht3);
+    triangle(x - 2*shipWd/9, y - 2*ht1/3, x, y - ht2 - ht3 - ht1, x + 2*shipWd/9, y - 2*ht1/3);
+  }
+
+  float getY() { // returns the top of ship
+    return y - ht2 - ht3 - ht1;
+  }
+
+  void move() {
+    // determines which way the ship should move
+    if (moveLeft == true) {
+      vx = -5;
+    } else if (moveRight == true) {
+      vx = 5;
+    } else if (moveLeft == false && moveRight == false) {
+      vx = 0;
+    }
+    // moves ship 
+    x += vx;
+    // constricts ship to only move within window 
+    if (x - shipWd/2 < 0) {
+      x = shipWd/2;
+    } else if (x + shipWd/2 > width) {
+      x = width - shipWd/2;
+    }
+  }
+
+  void shoot() {
+  }
+}
