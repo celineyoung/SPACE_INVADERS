@@ -1,10 +1,11 @@
+// handling key events
 void keyPressed() {
   if (keyCode == LEFT) {
     ship.moveLeft = true;
   } else if (keyCode == RIGHT) {
     ship.moveRight = true;
-  } else if (keyCode == ' ') {
-    
+  } else if (keyCode == ' ' && ship.canShoot == true) {    
+    ship.shoot();
   }
 }
 
