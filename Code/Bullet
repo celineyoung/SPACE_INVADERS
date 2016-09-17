@@ -1,0 +1,14 @@
+public class Bullet {
+  float x; 
+  float y = ship.getY();
+  float size = 5;
+  Bullet(float x) {
+    this.x = x; 
+  }
+  
+  void drawBullet() {
+    noStroke();
+    fill(255);
+    rect(x, y, size, size);
+  }
+}
