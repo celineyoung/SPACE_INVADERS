@@ -2,17 +2,21 @@
 void keyPressed() {
   if (keyCode == LEFT) {
     ship.moveLeft = true;
-  } else if (keyCode == RIGHT) {
+  } 
+  if (keyCode == RIGHT) {
     ship.moveRight = true;
-  } else if (keyCode == ' ' && ship.canShoot == true) {    
-    ship.shoot();
+  } 
+  if (keyCode == ' ' && ship.canShoot == true) {    
+    ship.shooting = true;
   }
 }
 
 void keyReleased() {
-  if (keyCode == LEFT) {
+  if (keyCode == LEFT) { // stops ship from moving in that direction if key is released
     ship.moveLeft = false;
   } else if (keyCode == RIGHT) {
     ship.moveRight = false;
+  } else if (keyCode == ' ') {
+    ship.shooting = false;
   }
 }
