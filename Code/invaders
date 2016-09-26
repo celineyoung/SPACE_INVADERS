@@ -1,0 +1,91 @@
+public class Invaders {
+  int rows = 6;
+  int cols = 12;
+  int[][] invaders;
+  boolean reverse = false;
+  float left = (width-(cols*45))/2 + 5;
+  int top = 60;
+  float invader_speed = 15;
+  int type;
+
+  Invaders() {
+    invaders = new int[cols][rows];
+  }
+
+  void createInvaders() {
+    for (int i = 0; i < cols; i++) {
+      for (int j = 0; j < rows; j++) {
+        invaders[i][j] = j;
+      }
+    }
+  }
+
+  void drawInvaders() {
+    PImage image0 = loadImage("sprites/inv_0.png"); 
+    PImage image1 = loadImage("sprites/inv_1.png");
+    PImage image2 = loadImage("sprites/inv_2.png"); 
+    PImage image3 = loadImage("sprites/inv_3.png");
+    PImage image4 = loadImage("sprites/inv_4.png"); 
+    PImage image5 = loadImage("sprites/inv_5.png");
+    PImage image6 = loadImage("sprites/inv_6.png"); 
+    PImage image7 = loadImage("sprites/inv_7.png");
+    PImage image8 = loadImage("sprites/inv_8.png"); 
+    PImage image9 = loadImage("sprites/inv_9.png");
+    PImage image10 = loadImage("sprites/inv_10.png"); 
+    PImage image11 = loadImage("sprites/inv_11.png");
+
+    for (int i = 0; i < cols; i++) {
+      for (int j = 0; j < rows; j++) {
+        int type = invaders[i][j]; // value at array index determines which image to draw
+        if (type == 0) {
+          int wd = 30;
+          int ht = 30;
+          image(image0, left + 45*i, top + 50*j, wd, ht);
+        } else if (type == 1) {
+          int wd = 30;
+          int ht = 30;
+          image(image1, left + 45*i, (top - 10) + 50*j, wd, ht);
+        } else if (type == 2) {
+          int wd = 40;
+          int ht = 40;
+          image(image2, left + 45*i, (top - 20) + 50*j, wd, ht);
+        } else if (type == 3) {
+          int wd = 40;
+          int ht = 40;
+          image(image3, left + 45*i, (top - 30) + 50*j, wd, ht);
+        } else if (type == 4) {
+          int wd = 45;
+          int ht = 45;
+          image(image4, left + 44*i, (top - 40) + 50*j, wd, ht);
+        } else if (type == 5) {
+          int wd = 45;
+          int ht = 45;
+          image(image5, left + 44*i, (top - 50) + 50*j, wd, ht);
+        }
+      }
+    }
+  }
+
+  void move() {
+    if (left < 0) {
+      reverse = false;
+      top += 10;
+    } else if (left + cols*45 > width) {
+      reverse = true;
+      top += 10;
+    }
+    if (reverse == false) {
+      left += invader_speed;
+    } else if (reverse == true) {
+      left -= invader_speed;
+    }
+  }
+  
+  void getX() {
+    return x;
+  }
+  
+  void getY() {
+    return y;
+  }
+}
