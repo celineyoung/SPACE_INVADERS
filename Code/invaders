@@ -21,46 +21,45 @@ public class Invaders {
   PImage image11 = loadImage("sprites/inv_11.png");
 
   Invaders() {
-    invaders = new int[cols][rows];
+    invaders = new int[rows][cols];
   }
 
   void createInvaders() {
-    for (int i = 0; i < cols; i++) {
-      for (int j = 0; j < rows; j++) {
-        invaders[i][j] = j;
+    for (int i = 0; i < rows; i++) {
+      for (int j = 0; j < cols; j++) {
+        invaders[i][j] = i;
       }
     }
   }
 
   void drawInvaders() {
-
-    for (int i = 0; i < cols; i++) {
-      for (int j = 0; j < rows; j++) {
+    for (int i = 0; i < rows; i++) {
+      for (int j = 0; j <cols; j++) {
         int type = invaders[i][j]; // value at array index determines which image to draw
         if (type == 0) {
           int wd = 30;
           int ht = 30;
-          image(image0, left + 45*i, top + 50*j, wd, ht);
+          image(image0, left + 45*j, top + 50*i, wd, ht);
         } else if (type == 1) {
           int wd = 30;
           int ht = 30;
-          image(image1, left + 45*i, (top - 10) + 50*j, wd, ht);
+          image(image1, left + 45*j, (top - 10) + 50*i, wd, ht);
         } else if (type == 2) {
           int wd = 40;
-          int ht = 40;
-          image(image2, left + 45*i, (top - 20) + 50*j, wd, ht);
+          int ht = 30;
+          image(image2, left + 45*j, (top - 20) + 50*i, wd, ht);
         } else if (type == 3) {
           int wd = 40;
-          int ht = 40;
-          image(image3, left + 45*i, (top - 30) + 50*j, wd, ht);
+          int ht = 30;
+          image(image3, left + 45*j, (top - 30) + 50*i, wd, ht);
         } else if (type == 4) {
-          int wd = 45;
-          int ht = 45;
-          image(image4, left + 44*i, (top - 40) + 50*j, wd, ht);
+          int wd = 43;
+          int ht = 35;
+          image(image4, left + 44*j, (top - 40) + 50*i, wd, ht);
         } else if (type == 5) {
-          int wd = 45;
-          int ht = 45;
-          image(image5, left + 44*i, (top - 50) + 50*j, wd, ht);
+          int wd = 43;
+          int ht = 35;
+          image(image5, left + 44*j, (top - 50) + 50*i, wd, ht);
         }
       }
     }
@@ -79,13 +78,5 @@ public class Invaders {
     } else if (reverse == true) {
       left -= invader_speed;
     }
-  }
-  
-  void getX() {
-    return x;
-  }
-  
-  void getY() {
-    return y;
   }
 }
