@@ -14,13 +14,12 @@ void draw() {
   background(0);
   displayScore();
   drawBullets();
+  invaders.display();
+  //if (delay%20 == 0) {
+    //invaders.move();
+  //}
 
-  invaders.drawInvaders();
-  if (delay%20 == 0) {
-    invaders.move();
-  }
-
-  ship.drawShip();
+  ship.display();
   ship.move(); // enables ship movement
   ship.shoot(); // enables ship to shoot
   if (delay%10 == 0) {
