@@ -16,17 +16,16 @@ void setup() {
 void draw() {
   background(0);
   displayScore();
-  drawBullets(); // draws the players bullets
-
   drawInvaders();
   //if (delay%20 == 0) {
   //invaders.move();
   //}
+  drawBullets(); // draws the players bullets
 
   ship.drawShip();
   ship.move(); // enables ship movement
   ship.shoot(); // enables ship to shoot
-  if (delay%10 == 0) {
+  if (delay%20 == 0) {
     ship.canShoot = true;
   }
 
@@ -55,9 +54,22 @@ void drawBullets() {
 void createInvaders() {
   float left = (width-(cols*45))/2 + 5;
   int top = 60;
+  int wd = 0;
+  int ht = 0;
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < cols; j++) {
-      invaders[i][j] = new Invader(i, left + 45*j, top + 50*i);
+      //top = 60 - i*10;
+      if (i == 0 || i == 1) {
+        wd = 30;
+        ht = 30;
+      } else if (i == 2 || i == 3) {
+        wd = 40;
+        ht = 30;
+      } else if (i == 4 || i == 5) {
+        wd = 43;
+        ht = 35;
+      }
+      invaders[i][j] = new Invader(i, left + 45*j, top + 50*i, wd, ht);
     }
   }
 }
@@ -65,12 +77,17 @@ void createInvaders() {
 void drawInvaders() {
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < cols; j++) {
-      Invader invader = invaders[i][j];
-      invader.drawInvader();
+      if (invaders[i][j] != null) {
+        Invader invader = invaders[i][j];
+        invader.drawInvader();
+        if (invader.collide()) {
+          invaders[i][j] = null;
+        }
+      }
     }
   }
 }
-
+/**
 void moveInvaders() {
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < cols; j++) {
@@ -79,6 +96,7 @@ void moveInvaders() {
     }
   }
 }
+*/
 
 // ------- initialisation -------
 void initialiseGame() {
