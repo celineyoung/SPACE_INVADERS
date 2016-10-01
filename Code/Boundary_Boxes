@@ -1,27 +1,24 @@
 public class BoundaryBox {
   float x, y;
-  int wd, ht;
-  
-  BoundaryBox(float x, float y, int wd, int ht) {
+  int wd, ht, row, col;
+
+  BoundaryBox(int row, int col, float x, float y, int wd, int ht) {
     this.x = x;
     this.y = y;
     this.wd = wd;
     this.ht = ht;
+    this.row = row;
+    this.col = col;
   }
-  
-  float getX() {
-    return x;
-  }
-  
-  float getY() {
-    return y;
-  }
-  
-  int getWd() {
-    return wd;
-  }
-  
-  int getHt() {
-    return ht;
+
+  boolean collision() {
+    for (int i = 0; i < bullets.size(); i++) {
+      Bullet bullet = bullets.get(i);
+      if (bullet.x >= x && (bullet.x + bullet.wd) <= (x + wd) && bullet.y <= (y + ht)) {
+        bullets.remove(i);
+        return true;
+      }
+    }
+    return false;
   }
 }
