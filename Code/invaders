@@ -2,7 +2,6 @@ public class Invaders {
   int rows = 6;
   int cols = 12;
   int[][] invaders;
-  boolean reverse = false;
   float left = (width-(cols*45))/2 + 5;
   int top = 60;
   float invader_speed = 15;
@@ -19,48 +18,75 @@ public class Invaders {
   PImage image9 = loadImage("sprites/inv_9.png");
   PImage image10 = loadImage("sprites/inv_10.png"); 
   PImage image11 = loadImage("sprites/inv_11.png");
+  boolean reverse = false;
+  ArrayList<BoundaryBox> boundaryBoxes;
+
 
   Invaders() {
     invaders = new int[rows][cols];
+    boundaryBoxes = new ArrayList<BoundaryBox>();
   }
 
   void createInvaders() {
+    int wd = 0;
+    int ht = 0;
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < cols; j++) {
         invaders[i][j] = i;
+        if (i == 0 || i == 1) {
+          wd = 30;
+          ht = 30;
+        } else if (i == 2 || i == 3) {
+          wd = 40;
+          ht = 30;
+        } else if (i == 4 || i == 5) {
+          wd = 43;
+          ht = 35;
+        }
+        boundaryBoxes.add(new BoundaryBox(i, j, left + 45*j, top - (i*10) + 50*i, wd, ht));
       }
     }
   }
 
-  void drawInvaders() {
+  void display() {
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j <cols; j++) {
-        int type = invaders[i][j]; // value at array index determines which image to draw
-        if (type == 0) {
-          int wd = 30;
-          int ht = 30;
-          image(image0, left + 45*j, top + 50*i, wd, ht);
-        } else if (type == 1) {
-          int wd = 30;
-          int ht = 30;
-          image(image1, left + 45*j, (top - 10) + 50*i, wd, ht);
-        } else if (type == 2) {
-          int wd = 40;
-          int ht = 30;
-          image(image2, left + 45*j, (top - 20) + 50*i, wd, ht);
-        } else if (type == 3) {
-          int wd = 40;
-          int ht = 30;
-          image(image3, left + 45*j, (top - 30) + 50*i, wd, ht);
-        } else if (type == 4) {
-          int wd = 43;
-          int ht = 35;
-          image(image4, left + 44*j, (top - 40) + 50*i, wd, ht);
-        } else if (type == 5) {
-          int wd = 43;
-          int ht = 35;
-          image(image5, left + 44*j, (top - 50) + 50*i, wd, ht);
+        if (invaders[i][j] >= 0) {
+          type = invaders[i][j]; // value at array index determines which image to draw
+          if (type == 0) {
+            int wd = 30;
+            int ht = 30;
+            image(image0, left + 45*j, top - (i*10) + 50*i, wd, ht);
+          } else if (type == 1) {
+            int wd = 30;
+            int ht = 30;
+            image(image1, left + 45*j, top - (i*10) + 50*i, wd, ht);
+          } else if (type == 2) {
+            int wd = 40;
+            int ht = 30;
+            image(image2, left + 45*j, top - (i*10) + 50*i, wd, ht);
+          } else if (type == 3) {
+            int wd = 40;
+            int ht = 30;
+            image(image3, left + 45*j, top - (i*10) + 50*i, wd, ht);
+          } else if (type == 4) {
+            int wd = 43;
+            int ht = 35;
+            image(image4, left + 44*j, top - (i*10) + 50*i, wd, ht);
+          } else if (type == 5) {
+            int wd = 43;
+            int ht = 35;
+            image(image5, left + 44*j, (top - 50) + 50*i, wd, ht);
+          }
         }
+      }
+    }
+
+    for (int i = 0; i < boundaryBoxes.size(); i++) {
+      BoundaryBox box = boundaryBoxes.get(i);
+      if (box.collision()) {
+        invaders[box.row][box.col] = -1;
+        boundaryBoxes.remove(i);
       }
     }
   }
