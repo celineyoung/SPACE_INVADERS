@@ -69,14 +69,21 @@ public class Fleet {
     }
   }
 
-  void reverse() { // when the invader hits a wall, speed needs to invert
+  void reverse() { // when the invader hits a wall, invaders change direction
     for (int r = 0; r < rows; r++) {
       for (int c = 0; c < cols; c++) {
         if (invaders[r][c] != null) {
           Invader invader = invaders[r][c];
-          invader.y += invader.invader_speed;
+          // moves invaders down
+          invader.y += Math.abs(invader.invader_speed); 
+          // increments speed of invaders
+          if (invader.invader_speed > 0) { // 
           invader.invader_speed += 5;
-          invader.invader_speed *= -1; // changes the direction of every invader
+          } else {
+            invader.invader_speed -= 5;
+          }
+          // changes the direction of every invader
+          invader.invader_speed *= -1; 
         }
       }
     }
