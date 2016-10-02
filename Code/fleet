@@ -1,0 +1,95 @@
+public class Fleet {
+  float left;
+  int top;
+  int rows = 6; // rows of invaders
+  int cols = 12; // cols of invaders
+  Invader[][] invaders;
+  HashMap<Integer, Integer> points = new HashMap<Integer, Integer>();
+  float speed = 15;
+  int dir = 1;
+  boolean reverse = false;
+
+  Fleet() {
+    invaders = new Invader[rows][cols];
+    left = (width-(cols*45))/2 + 5; // x of fleet
+    top = 60; // y of fleet
+    typeToPoints(); // sets up map
+  }
+
+  void create() {
+    int wd = 0;
+    int ht = 0;
+    for (int i = 0; i < rows; i++) {
+      for (int j = 0; j < cols; j++) {
+        if (i == 0 || i == 1) {
+          wd = 30;
+          ht = 30;
+        } else if (i == 2 || i == 3) {
+          wd = 40;
+          ht = 30;
+        } else if (i == 4 || i == 5) {
+          wd = 43;
+          ht = 35;
+        }
+        invaders[i][j] = new Invader(i, left + 45*j, top + 50*i, wd, ht);
+      }
+    }
+  }
+
+  void display() {
+    for (int i = 0; i < rows; i++) {
+      for (int j = 0; j < cols; j++) {          
+        if (invaders[i][j] != null) {
+          Invader invader = invaders[i][j];
+          // checks if fleet is hitting a wall
+          if (!reverse) {
+            if (invader.x + invader.wd + invader.invader_speed > width) {
+              fleet.reverse = true;
+              fleet.reverse();
+            }
+          } else {
+            if (invader.x + invader.invader_speed < 0) {
+              fleet.reverse = false;
+              fleet.reverse();
+            }
+          }
+          // draws invaders
+          invader.drawInvader();
+          // checks for collisions between bullets and each invader
+          if (invader.collide()) { 
+            score += (points.get(invader.type)); // increments score according to invader type
+            invaders[i][j] = null;
+          }
+          // moves invaders every 20 frames
+          if (frameCount%20 == 0) {
+            invader.move(); // moves invader every 20 framecounts
+          }
+        }
+      }
+    }
+  }
+
+  void reverse() { // when the invader hits a wall, speed needs to invert
+    for (int r = 0; r < rows; r++) {
+      for (int c = 0; c < cols; c++) {
+        if (invaders[r][c] != null) {
+          Invader invader = invaders[r][c];
+          invader.y += invader.invader_speed;
+          invader.invader_speed += 5;
+          invader.invader_speed *= -1; // changes the direction of every invader
+        }
+      }
+    }
+  }
+
+  void typeToPoints() {
+    // maps invader type to amount of points you get
+    points.put(0, 30);
+    points.put(1, 30);
+    points.put(2, 20);
+    points.put(3, 20);
+    points.put(4, 10);
+    points.put(5, 10);
+    points.put(6, 50);
+  }
+}
