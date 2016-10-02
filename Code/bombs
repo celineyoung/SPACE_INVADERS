@@ -1,0 +1,15 @@
+public class Bomb {
+  PImage img = loadImage("sprites/bomb.png"); 
+  float x, y;
+  int wd = 10;
+  float ht = 2.5*wd;
+  
+  Bomb(float x, float y) {
+    this.x = x;
+    this.y = y;
+  }
+  
+  void display() {
+    image(img, x, y, wd, ht);
+  }
+}
