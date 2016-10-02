@@ -63,7 +63,7 @@ public class Fleet {
           // moves invaders every 20 frames
           if (frameCount%20 == 0) {
             invader.move(); // moves invader every 20 framecounts
-          }
+          } 
         }
       }
     }
@@ -78,13 +78,24 @@ public class Fleet {
           invader.y += Math.abs(invader.invader_speed); 
           // increments speed of invaders
           if (invader.invader_speed > 0) { // 
-          invader.invader_speed += 5;
+            invader.invader_speed += 5;
           } else {
             invader.invader_speed -= 5;
           }
           // changes the direction of every invader
-          invader.invader_speed *= -1; 
+          invader.invader_speed *= -1;
         }
+      }
+    }
+  }
+
+  void dropBomb() {
+    if (Math.random() > 0.3) {
+      int r = (int)(random(rows));
+      int c = (int)(random(cols));
+      if (invaders[r][c] != null) {
+        Invader invader = invaders[r][c]; 
+        bombs.add(new Bomb(invader.x + invader.wd/2, invader.y + invader.ht));
       }
     }
   }
