@@ -1,36 +1,26 @@
 Ship ship;
+Fleet fleet;
 ArrayList<Bullet> bullets = new ArrayList <Bullet>();
-int rows = 6; // rows of invaders
-int cols = 12; // cols of invaders
-Invader[][] invaders;
-
-int delay = 0;
 int score = 0;
 
 void setup() {
+  //frameRate(30);
   size(1000, 700);
   initialiseGame();
-  createInvaders();
 }
 
 void draw() {
   background(0);
   displayScore();
-  drawInvaders();
-  //if (delay%20 == 0) {
-  //invaders.move();
-  //}
+  fleet.display();
   drawBullets(); // draws the players bullets
 
   ship.drawShip();
   ship.move(); // enables ship movement
   ship.shoot(); // enables ship to shoot
-  if (delay%20 == 0) {
+  if (frameCount%20 == 0) {
     ship.canShoot = true;
   }
-
-  // delay so that player cannot hold space bar and create what looks like an endless bullet
-  delay++;
 }
 
 void displayScore() {
@@ -39,68 +29,21 @@ void displayScore() {
   text("Score: " + score, 10, 30);
 }
 
-void drawBullets() {
+void drawBullets() { // bullets player fire
   for (int i = 0; i < bullets.size(); i++) {
     Bullet b = bullets.get(i);
-    b.drawBullet();
-    // deleting bullets arraylist once bullet disappears off screen to keep arrayList 
-    // relatively small
+    b.display();
+    // deleting bullets arraylist once bullet disappears off screen
     if (b.y + b.ht/2 < 0) {
       bullets.remove(i);
     }
   }
 }
 
-void createInvaders() {
-  float left = (width-(cols*45))/2 + 5;
-  int top = 60;
-  int wd = 0;
-  int ht = 0;
-  for (int i = 0; i < rows; i++) {
-    for (int j = 0; j < cols; j++) {
-      //top = 60 - i*10;
-      if (i == 0 || i == 1) {
-        wd = 30;
-        ht = 30;
-      } else if (i == 2 || i == 3) {
-        wd = 40;
-        ht = 30;
-      } else if (i == 4 || i == 5) {
-        wd = 43;
-        ht = 35;
-      }
-      invaders[i][j] = new Invader(i, left + 45*j, top + 50*i, wd, ht);
-    }
-  }
-}
-
-void drawInvaders() {
-  for (int i = 0; i < rows; i++) {
-    for (int j = 0; j < cols; j++) {
-      if (invaders[i][j] != null) {
-        Invader invader = invaders[i][j];
-        invader.drawInvader();
-        if (invader.collide()) {
-          invaders[i][j] = null;
-        }
-      }
-    }
-  }
-}
-/**
-void moveInvaders() {
-  for (int i = 0; i < rows; i++) {
-    for (int j = 0; j < cols; j++) {
-      Invader invader = invaders[i][j];
-      invader.move();
-    }
-  }
-}
-*/
-
 // ------- initialisation -------
 void initialiseGame() {
   bullets.clear();
   ship = new Ship(width/2);
-  invaders = new Invader[rows][cols];
+  fleet = new Fleet();
+  fleet.create();
 }
