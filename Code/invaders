@@ -1,14 +1,17 @@
 public class Invader {
-  int type;
-  float x, y;
-  int wd, ht;
-  float invader_speed = 15;
+  // sprite images
   PImage image0 = loadImage("sprites/inv_0.png"); 
   PImage image1 = loadImage("sprites/inv_1.png");
   PImage image2 = loadImage("sprites/inv_2.png"); 
   PImage image3 = loadImage("sprites/inv_3.png");
   PImage image4 = loadImage("sprites/inv_4.png"); 
   PImage image5 = loadImage("sprites/inv_5.png");
+
+  int type;
+  float x, y;
+  int wd, ht;
+  float invader_speed = 15;
+
 
   Invader(int type, float x, float y, int wd, int ht) {
     this.type = type;
@@ -18,7 +21,7 @@ public class Invader {
     this.ht = ht;
   }
 
-  void drawInvader() { // draws according to type
+  void display() { // draws according to type
     if (type == 0) {
       image(image0, x, y, wd, ht);
     } else if (type == 1) {
@@ -37,10 +40,10 @@ public class Invader {
   }
 
   void move() {
-    x += invader_speed; // moves invader's x pos 
+    x += invader_speed; // moves invader's x pos
   }
 
-  boolean collide() {
+  boolean collideWithBullet() {
     for (int i = 0; i < bullets.size(); i++) {
       Bullet b = bullets.get(i);
       // if bullet position and invader position are the same
@@ -49,6 +52,56 @@ public class Invader {
         return true;
       }
     }
+    return false;
+  }
+
+  boolean collideWithShip() {
+
+    float invLeft = x;
+    float invRight = x + wd;
+
+    float shipLeft1 = ship.x - ship.wd1/2;
+    float shipRight1 = ship.x + ship.wd1/2;
+
+    float shipLeft2 = ship.x - ship.wd2/2;
+    float shipRight2 = ship.x + ship.wd2/2;
+
+    float shipLeft3 = ship.x - ship.wd3/2;
+    float shipRight3 = ship.x + ship.wd3/2;
+
+    // first rectangle component of ship
+    if ((y + ht) >= (ship.y - ship.ht1/2)) {
+      if (invRight >= shipLeft1 && invLeft < shipLeft1) {
+        return true;
+      } else if (invLeft <= shipRight1 && invRight > shipRight1) {
+        return true;
+      } else if (invLeft >= shipLeft1 && invRight <= shipRight1) {
+        return true;
+      }
+    }
+
+    // second rectangle component of ship
+    if ((y + ht) >= (ship.y - ship.ht2/2)) {
+      if (invRight >= shipLeft2 && invLeft < shipLeft2) {
+        return true;
+      } else if (invLeft <= shipRight2 && invRight > shipRight2) {
+        return true;
+      } else if (invLeft >= shipLeft2 && invRight <= shipRight2) {
+        return true;
+      }
+    }
+    
+    // third rectangle component of ship
+    if ((y + ht) >= (ship.y - ship.ht3/2)) {
+      if (invRight >= shipLeft3 && invLeft < shipLeft3) {
+        return true;
+      } else if (invLeft <= shipRight3 && invRight > shipRight3) {
+        return true;
+      } else if (invLeft >= shipLeft3 && invRight <= shipRight3) {
+        return true;
+      }
+    }
+    
     return false;
   }
 }
