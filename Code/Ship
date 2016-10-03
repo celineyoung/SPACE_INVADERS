@@ -1,11 +1,16 @@
 public class Ship {
   float x;
-  float vx = 0;
-  float shipWd = width/15; // widest part of ship
   float y = height - 60;
+  float vx = 0;
+  int initial_speed = 5;
+  
+  float wd1 = width/15; // widest part of ship
+  float wd2 = 2*wd1/3;
+  float wd3 = 4*wd1/9;
   float ht1 = height/70;
   float ht2 = 2*ht1/3;
   float ht3 = 4*ht1/9;
+  
   boolean moveLeft = false;
   boolean moveRight = false;
   boolean canShoot = true;
@@ -15,15 +20,19 @@ public class Ship {
     this.x = x;
   }
 
-  void drawShip() {
+  void display() {
     rectMode(CENTER);
     stroke(255);
     fill(255);
     // drawing the ship object with three tiers and a triangle on top
-    rect(x, y, shipWd, ht1);
-    rect(x, y - ht2, 2*shipWd/3, ht2);
-    rect(x, y - ht2 - ht3, 4*shipWd/9, ht3);
-    triangle(x - 2*shipWd/9, y - 2*ht1/3, x, y - ht2 - ht3 - ht1, x + 2*shipWd/9, y - 2*ht1/3);
+    rect(x, y, wd1, ht1);
+    rect(x, y - ht2, wd2, ht2);
+    rect(x, y - ht2 - ht3, wd3, ht3);
+    triangle(x - 2*wd1/9, y - 2*ht1/3, x, y - ht2 - ht3 - ht1, x + 2*wd1/9, y - 2*ht1/3);
+
+    if (collide()) {
+      lives--;
+    }
   }
 
   float getY() { // returns the top of ship
@@ -33,19 +42,19 @@ public class Ship {
   void move() {
     // determines which way the ship should move
     if (moveLeft) {
-      vx = -5;
+      vx = -initial_speed;
     } else if (moveRight) {
-      vx = 5;
+      vx = initial_speed;
     } else if (moveLeft == false && moveRight == false) {
       vx = 0;
     }
     // moves ship 
     x += vx;
     // constricts ship to only move within window 
-    if (x - shipWd/2 < 0) {
-      x = shipWd/2;
-    } else if (x + shipWd/2 > width) {
-      x = width - shipWd/2;
+    if (x - wd1/2 < 0) {
+      x = wd1/2;
+    } else if (x + wd1/2 > width) {
+      x = width - wd1/2;
     }
   }
 
@@ -54,5 +63,25 @@ public class Ship {
       bullets.add(new Bullet(x));
       canShoot = false;
     }
+  }
+
+  boolean collide() {
+    for (int i = 0; i < bombs.size(); i++) {
+      Bomb bomb = bombs.get(i);
+      // first rectangle component of ship
+      if ((bomb.x >= (x - wd1/2) && (bomb.x + bomb.wd/2) <= (x + wd1/2) && (bomb.y + bomb.ht) >= (y - ht1/2))) { 
+        bombs.remove(i);
+        return true;
+        // second rectangle component of ship
+      } else if ((bomb.x >= (x - wd2/2) && (bomb.x + bomb.wd/2) <= (x + wd2/2) && (bomb.y + bomb.ht) >= (y - ht2/2))) { 
+        bombs.remove(i);
+        return true;
+        // third rectangle component of ship
+      } else if ((bomb.x >= (x - wd3/2) && (bomb.x + bomb.wd/2)<= (x + wd3/2) && (bomb.y + bomb.ht) >= (y - ht3/2))) { 
+        bombs.remove(i);
+        return true;
+      }
+    }
+    return false;
   }
 }
