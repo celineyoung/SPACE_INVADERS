@@ -1,18 +1,21 @@
 public class Fleet {
+  // map from invader type to points
+  HashMap<Integer, Integer> points = new HashMap<Integer, Integer>();
+  // 2D array holding invader objects
+  Invader[][] invaders;
+  int rows = 6; 
+  int cols = 12; 
+  // starting positions of invaders
   float left;
   int top;
-  int rows = 6; // rows of invaders
-  int cols = 12; // cols of invaders
-  Invader[][] invaders;
-  HashMap<Integer, Integer> points = new HashMap<Integer, Integer>();
+  // speed and dir of fleet
   float speed = 15;
-  int dir = 1;
   boolean reverse = false;
 
   Fleet() {
     invaders = new Invader[rows][cols];
     left = (width-(cols*45))/2 + 5; // x of fleet
-    top = 60; // y of fleet
+    top = 120; // y of fleet
     typeToPoints(); // sets up map
   }
 
@@ -54,16 +57,16 @@ public class Fleet {
             }
           }
           // draws invaders
-          invader.drawInvader();
+          invader.display();
           // checks for collisions between bullets and each invader
-          if (invader.collide()) { 
+          if (invader.collideWithBullet()) { 
             score += (points.get(invader.type)); // increments score according to invader type
             invaders[i][j] = null;
           }
           // moves invaders every 20 frames
           if (frameCount%20 == 0) {
             invader.move(); // moves invader every 20 framecounts
-          } 
+          }
         }
       }
     }
@@ -90,13 +93,13 @@ public class Fleet {
   }
 
   void dropBomb() {
-    if (Math.random() > 0.3) {
-      int r = (int)(random(rows));
-      int c = (int)(random(cols));
-      if (invaders[r][c] != null) {
-        Invader invader = invaders[r][c]; 
-        bombs.add(new Bomb(invader.x + invader.wd/2, invader.y + invader.ht));
-      }
+    int r = (int)(random(rows));
+    int c = (int)(random(cols));
+    if (invaders[r][c] != null) {
+      //if (Math.random() > 0.2) {
+      Invader invader = invaders[r][c]; 
+      bombs.add(new Bomb(invader.x + invader.wd/2, invader.y + invader.ht));
+      //}
     }
   }
 
