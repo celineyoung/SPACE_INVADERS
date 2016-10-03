@@ -63,6 +63,11 @@ public class Fleet {
             score += (points.get(invader.type)); // increments score according to invader type
             invaders[i][j] = null;
           }
+          // checks for collision with ship
+          if (invader.collideWithShip()) {
+            state = "game_over";
+            gameOver();
+          }
           // moves invaders every 20 frames
           if (frameCount%20 == 0) {
             invader.move(); // moves invader every 20 framecounts
