@@ -1,38 +1,54 @@
 Ship ship;
 Fleet fleet;
+Mothership mothership;
 ArrayList<Bullet> bullets = new ArrayList <Bullet>();
 ArrayList<Bomb> bombs = new ArrayList <Bomb>();
 int score = 0;
+int lives = 3;
 
 void setup() {
   //frameRate(30);
-  size(1000, 700);
+  size(1000, 800);
   initialiseGame();
 }
 
 void draw() {
   background(0);
-  displayScore();
+  displayInfoBar();
   drawBullets(); // draws the players bullets
   drawBombs(); // draws the dropped bombs
-  
+
   fleet.display();
   if (frameCount%20 == 0) {
-  fleet.dropBomb();
+    fleet.dropBomb();
   }
 
-  ship.drawShip();
+  ship.display();
   ship.move(); // enables ship movement
   ship.shoot(); // enables ship to shoot
   if (frameCount%20 == 0) {
     ship.canShoot = true;
   }
+  if (mothership != null) {
+    mothership.display();
+    if (mothership.collide()) {
+      score += 100;
+      mothership = null;
+    }
+  }
+  if (frameCount%200 == 0) {
+    generateMothership();
+  }
 }
 
-void displayScore() {
-  textSize(24);
+void displayInfoBar() {
   fill(255);
-  text("Score: " + score, 10, 30);
+  rectMode(CORNER);
+  rect(0, 0, width, 30);
+  textSize(24);
+  fill(0);
+  text("Score: " + score, 10, 25);
+  text("Lives: " + lives, 240, 25);
 }
 
 void drawBullets() { // bullets player fire
@@ -53,6 +69,15 @@ void drawBombs() { // bombs invaders drop
     // deleting bombs arraylist once bullet disappears off screen
     if (b.y > height) {
       bombs.remove(i);
+    }
+  }
+}
+
+void generateMothership() {
+  if (mothership == null) {
+    if (Math.random() > 0.9) {
+      int perk = (int)(random(5));
+      mothership = new Mothership(perk);
     }
   }
 }
