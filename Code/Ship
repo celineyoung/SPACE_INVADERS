@@ -69,15 +69,15 @@ public class Ship {
     for (int i = 0; i < bombs.size(); i++) {
       Bomb bomb = bombs.get(i);
       // first rectangle component of ship
-      if ((bomb.x >= (x - wd1/2) && (bomb.x + bomb.wd/2) <= (x + wd1/2) && (bomb.y + bomb.ht) >= (y - ht1/2))) { 
+      if (bomb.x >= (x - wd1/2) && (bomb.x + bomb.wd/2) <= (x + wd1/2) && (bomb.y + bomb.ht) >= (y - ht1/2) && bomb.y <= (y + ht1/2)) { 
         bombs.remove(i);
         return true;
         // second rectangle component of ship
-      } else if ((bomb.x >= (x - wd2/2) && (bomb.x + bomb.wd/2) <= (x + wd2/2) && (bomb.y + bomb.ht) >= (y - ht2/2))) { 
+      } else if (bomb.x >= (x - wd2/2) && (bomb.x + bomb.wd/2) <= (x + wd2/2) && (bomb.y + bomb.ht) >= (y - ht2/2) && bomb.y <= (y + ht2/2)) { 
         bombs.remove(i);
         return true;
         // third rectangle component of ship
-      } else if ((bomb.x >= (x - wd3/2) && (bomb.x + bomb.wd/2)<= (x + wd3/2) && (bomb.y + bomb.ht) >= (y - ht3/2))) { 
+      } else if (bomb.x >= (x - wd3/2) && (bomb.x + bomb.wd/2)<= (x + wd3/2) && (bomb.y + bomb.ht) >= (y - ht3/2) && bomb.y <= (y + ht3/2)) { 
         bombs.remove(i);
         return true;
       }
