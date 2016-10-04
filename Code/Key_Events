@@ -11,6 +11,10 @@ void keyPressed() {
       ship.shooting = true;
     }
   }
+  if (keyCode == ' ' && state.equalsIgnoreCase("menu") || keyCode == ' ' && state.equalsIgnoreCase("game_over")) {
+    state = "loading";
+    startTime = millis();
+  }
 }
 
 void keyReleased() {
