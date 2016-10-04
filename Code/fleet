@@ -64,9 +64,8 @@ public class Fleet {
             invaders[i][j] = null;
           }
           // checks for collision with ship
-          if (invader.collideWithShip()) {
-            state = "game_over";
-            gameOver();
+          if (invader.collideWithShip() || invader.collideWithBot()) {
+            lives = 0; // kills you instantly
           }
           // moves invaders every 20 frames
           if (frameCount%20 == 0) {
