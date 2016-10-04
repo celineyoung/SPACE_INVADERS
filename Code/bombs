@@ -3,6 +3,7 @@ public class Bomb {
   float x, y;
   int wd = 10;
   float ht = 2.5*wd;
+  int vy = 5;
   
   Bomb(float x, float y) {
     this.x = x;
@@ -10,6 +11,8 @@ public class Bomb {
   }
   
   void display() {
+    imageMode(CORNER);
     image(img, x, y, wd, ht);
+    y += vy;
   }
 }
