@@ -3,22 +3,43 @@ Fleet fleet;
 Mothership mothership;
 ArrayList<Bullet> bullets = new ArrayList <Bullet>();
 ArrayList<Bomb> bombs = new ArrayList <Bomb>();
-int score = 0;
-int lives = 3;
-String state = "play";
+int score;
+int lives;
+PImage title;
+PImage loading;
+PFont customFont;
+String state;
+int startTime;
 
 void setup() {
   //frameRate(30);
   size(1000, 800);
-  initialiseGame();
+  customFont = createFont("ca.ttf", 32); // loading custom font
+  title = loadImage("sprites/title.png");
+  loading = loadImage("sprites/loading.jpg");
+  state = "menu";
 }
 
 void draw() {
+  background(0);
+
+  if (state.equalsIgnoreCase("menu")) {
+    displayMenu();
+  }
+
+  if (state.equalsIgnoreCase("loading")) {  
+    displayLoading();
+  }
+
+  if (state.equalsIgnoreCase("game_over")) {
+    gameOver();
+  }
+
   if (state.equalsIgnoreCase("play")) {    
     if (isGameOver()) {
+      textFont(customFont);
       state = "game_over";
     }
-    background(0);
     displayInfoBar();
     drawBullets(); // draws the players bullets
     drawBombs(); // draws the dropped bombs
@@ -44,19 +65,21 @@ void draw() {
     if (frameCount%200 == 0) {
       generateMothership();
     }
-  } else if (state.equalsIgnoreCase("game_over")) {
-    gameOver();
   }
 }
+
+// ------- METHODS FOR PLAYING GAME -------
 
 void displayInfoBar() {
   fill(255);
   rectMode(CORNER);
   rect(0, 0, width, 30);
+  textFont(customFont);
   textSize(24);
+  textAlign(CORNER);
   fill(0);
-  text("Score: " + score, 10, 25);
-  text("Lives: " + lives, 240, 25);
+  text("Score <" + score + ">", 10, 25);
+  text("Lives <" + lives + ">", 240, 25);
 }
 
 void drawBullets() { // bullets player fire
@@ -83,10 +106,10 @@ void drawBombs() { // bombs invaders drop
 
 void generateMothership() {
   if (mothership == null) {
-    if (Math.random() > 0.9) {
-      int perk = (int)(random(5));
-      mothership = new Mothership(perk);
-    }
+    //if (Math.random() > 0.9) {
+    int perk = (int)(random(5));
+    mothership = new Mothership(perk);
+    //}
   }
 }
 
@@ -97,23 +120,54 @@ boolean isGameOver() {
   return false;
 }
 
+// ------- GAME OVER SCREEN -------
+
 void gameOver() {
   // sets all objects to null
   ship = null;
   mothership = null;
   fleet = null;
 
-  background(0);
   textSize(100);
   fill(255);
-  text("Game Over!", 50, 225);
+  textAlign(CENTER, CENTER);
+  text("Game Over!", width/2, height/2);
+  textSize(20);
+  text ("Press space to restart", width/2, 2*height/3);
 }
 
-// ------- initialisation -------
+// ------- MENU -------
+
+void displayMenu() {
+  imageMode(CENTER);
+  image(title, width/2, height/4);
+  textFont(customFont);
+  textAlign(CENTER, CENTER);
+  textSize(28);
+  text("Controls \nSpace : Shoot\nMove left/right : Arrow Keys", width/2, 3*height/5);
+  textSize(45);
+  text("PRESS SPACE TO START GAME", width/2, 5*height/6);
+}
+
+// ------- LOADING SCREEN --------
+
+void displayLoading() {
+  initialiseGame();
+  imageMode(CENTER);
+  image(loading, width/2, height/2);
+  if (millis() > startTime + 2500) {
+    state = "play";
+  }
+}
+
+// ------- INITIALISATION -------
+
 void initialiseGame() {
   bullets.clear();
   bombs.clear();
   ship = new Ship(width/2);
   fleet = new Fleet();
   fleet.create();
+  lives = 3;
+  score = 0;
 }
