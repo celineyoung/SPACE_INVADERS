@@ -12,6 +12,7 @@ public class Mothership {
   }
 
   void display() {
+    imageMode(CORNER);
     image(img, x, y, wd, ht);
     x += speed;
   }
