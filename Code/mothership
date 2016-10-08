@@ -3,18 +3,27 @@ public class Mothership {
   PImage img = loadImage("sprites/mothership.png");
   int x = 0; 
   int y = 40;
-  int speed = 3;
+  int speed = 2;
   int ht = 30;
   int wd = 2*ht;
+  int displayAmount = 0;
+  boolean displayingPoints = false;
 
   Mothership(int perk) {
     this.perk = perk;
   }
 
   void display() {
-    imageMode(CORNER);
-    image(img, x, y, wd, ht);
-    x += speed;
+    if (!displayingPoints) {
+      imageMode(CORNER);
+      image(img, x, y, wd, ht);
+      x += speed;
+    } else {
+      fill(255);
+      textFont(customFont);
+      textSize(20);
+      text(displayAmount, x, y);
+    }
   }
 
   boolean collide() {
@@ -27,5 +36,31 @@ public class Mothership {
       }
     }
     return false;
+  }
+
+  boolean outOfWindow() {
+    if (x > width) {
+      return true;
+    }
+    return false;
+  }
+
+  void findPerk() {
+    ship.perkTimer = millis();
+    if (perk == 0) {
+      ship.shrink();
+    } else if (perk == 1) {
+      displayAmount = 200;
+      score += 200;
+      displayingPoints = true;
+    } else if (perk == 2) {
+      ship.newGun = true;
+    } else if (perk == 3) {
+      displayAmount = 100;
+      score += 100;
+      displayingPoints = true;
+    } else if (perk == 4) {
+      ship.faster();
+    }
   }
 }
