@@ -3,24 +3,41 @@ public class Ship {
   float y = height - 60;
   float vx = 0;
   int initial_speed = 5;
-  
-  float wd1 = width/15; // widest part of ship
-  float wd2 = 2*wd1/3;
-  float wd3 = 4*wd1/9;
-  float ht1 = height/70;
-  float ht2 = 2*ht1/3;
-  float ht3 = 4*ht1/9;
-  
+  int velocity = initial_speed;
+
+  float initialWd = width/15; // widest part of ship
+  float initialHt = height/70;
+  float wd1 = initialWd; 
+  float wd2;
+  float wd3;
+  float ht1 = initialHt;
+  float ht2;
+  float ht3;
+
+  // flags for movement
   boolean moveLeft = false;
   boolean moveRight = false;
   boolean canShoot = true;
   boolean shooting = false;
+
+  // flags for perks
+  boolean shrink = false;
+  boolean newGun = false;
+  boolean doubleSpeed = false;
+  
+  int perkTimer;
 
   Ship(float x) {
     this.x = x;
   }
 
   void display() {
+    // calculates size of ship
+    wd2 = 2*wd1/3;
+    wd3 = 4*wd1/9;
+    ht2 = 2*ht1/3;
+    ht3 = 4*ht1/9;
+
     rectMode(CENTER);
     stroke(255);
     fill(255);
@@ -33,6 +50,19 @@ public class Ship {
     if (collide()) {
       lives--;
     }
+    // changes ship back to original size
+    if (millis() >= perkTimer + 4000) {
+      if (shrink) {
+        wd1 = initialWd;
+        ht1 = initialHt;
+        shrink = false;
+      } else if (newGun) {
+        newGun = false;
+      } else if (doubleSpeed) {
+        doubleSpeed = false;
+        velocity = initial_speed;
+      }
+    }
   }
 
   float getY() { // returns the top of ship
@@ -42,9 +72,9 @@ public class Ship {
   void move() {
     // determines which way the ship should move
     if (moveLeft) {
-      vx = -initial_speed;
+      vx = -velocity;
     } else if (moveRight) {
-      vx = initial_speed;
+      vx = velocity;
     } else if (moveLeft == false && moveRight == false) {
       vx = 0;
     }
@@ -60,11 +90,18 @@ public class Ship {
 
   void shoot() {
     if (shooting && canShoot) {
-      bullets.add(new Bullet(x));
+      // normal gun
+      Bullet b = new Bullet(x);
+      bullets.add(b);
+      // shoots three bullets at once
+      if (newGun == true) {
+        bullets.add(new Bullet(x - 2*b.wd));
+        bullets.add(new Bullet(x + 2*b.wd));
+      }
       canShoot = false;
     }
   }
-
+  // collision detection with invaders' bombs
   boolean collide() {
     for (int i = 0; i < bombs.size(); i++) {
       Bomb bomb = bombs.get(i);
@@ -83,5 +120,20 @@ public class Ship {
       }
     }
     return false;
+  }
+  // makes ship smaller
+  void shrink() {
+    if (shrink != true) {
+      shrink = true;
+      wd1 = wd1/2;
+      ht1 = ht1/2;
+    }
+  }
+
+  void faster() {
+    if (doubleSpeed != true) {
+      doubleSpeed = true;
+      velocity = 2*initial_speed;
+    }
   }
 }
