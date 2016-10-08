@@ -10,7 +10,7 @@ public class Invader {
   int type;
   float x, y;
   int wd, ht;
-  float invader_speed = 15;
+  float invader_speed = 10;
 
 
   Invader(int type, float x, float y, int wd, int ht) {
@@ -22,6 +22,7 @@ public class Invader {
   }
 
   void display() { // draws according to type
+  imageMode(CORNER);
     if (type == 0) {
       image(image0, x, y, wd, ht);
     } else if (type == 1) {
@@ -47,7 +48,7 @@ public class Invader {
     for (int i = 0; i < bullets.size(); i++) {
       Bullet b = bullets.get(i);
       // if bullet position and invader position are the same
-      if ((b.x - b.wd/2) >= x && (b.x + b.wd/2) <= (x + wd) && (b.y - b.ht) <= (y + ht)) {
+      if ((b.x - b.wd/2) >= x && (b.x + b.wd/2) <= (x + wd) && (b.y - b.ht) <= (y + ht) && (b.y + b.ht) >= (y + ht)) {
         bullets.remove(i);
         return true;
       }
@@ -56,7 +57,6 @@ public class Invader {
   }
 
   boolean collideWithShip() {
-
     float invLeft = x;
     float invRight = x + wd;
 
@@ -100,8 +100,14 @@ public class Invader {
       } else if (invLeft >= shipLeft3 && invRight <= shipRight3) {
         return true;
       }
+    }    
+    return false;
+  }
+  
+  boolean collideWithBot() {
+    if (y + ht >= height) {
+      return true;
     }
-    
     return false;
   }
 }
