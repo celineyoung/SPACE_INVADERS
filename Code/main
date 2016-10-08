@@ -9,10 +9,9 @@ PImage title;
 PImage loading;
 PFont customFont;
 String state;
-int startTime;
+int startTime = millis();
 
 void setup() {
-  //frameRate(30);
   size(1000, 800);
   customFont = createFont("ca.ttf", 32); // loading custom font
   title = loadImage("sprites/title.png");
@@ -37,9 +36,9 @@ void draw() {
 
   if (state.equalsIgnoreCase("play")) {    
     if (isGameOver()) {
-      textFont(customFont);
       state = "game_over";
     }
+
     displayInfoBar();
     drawBullets(); // draws the players bullets
     drawBombs(); // draws the dropped bombs
@@ -58,7 +57,15 @@ void draw() {
     if (mothership != null) {
       mothership.display();
       if (mothership.collide()) {
-        score += 100;
+        mothership.findPerk();
+        if (mothership.perk != 1 || mothership.perk != 3) {
+          mothership = null;
+        } else {
+          if (ship.perkTimer + 250 > millis()) {
+            mothership = null;
+          }
+        }
+      } else if (mothership.outOfWindow()) { // deleting mothership once it has disappeared
         mothership = null;
       }
     }
@@ -66,6 +73,9 @@ void draw() {
       generateMothership();
     }
   }
+}
+
+void findState () {
 }
 
 // ------- METHODS FOR PLAYING GAME -------
@@ -106,10 +116,11 @@ void drawBombs() { // bombs invaders drop
 
 void generateMothership() {
   if (mothership == null) {
-    //if (Math.random() > 0.9) {
-    int perk = (int)(random(5));
-    mothership = new Mothership(perk);
-    //}
+    if (Math.random() > 0.6) {
+      int perk = (int)(random(5));
+      print("Perk: " + perk);
+      mothership = new Mothership(perk);
+    }
   }
 }
 
@@ -157,6 +168,7 @@ void displayLoading() {
   image(loading, width/2, height/2);
   if (millis() > startTime + 2500) {
     state = "play";
+    startTime = millis();
   }
 }
 
