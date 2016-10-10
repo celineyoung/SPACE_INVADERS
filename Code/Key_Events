@@ -11,7 +11,10 @@ void keyPressed() {
       ship.shooting = true;
     }
   }
-  if (keyCode == ' ' && state.equalsIgnoreCase("menu") || keyCode == ' ' && state.equalsIgnoreCase("game_over")) {
+  if (keyCode == ' ' && state.equalsIgnoreCase("menu") || keyCode == ' ' && state.equalsIgnoreCase("game_over") || keyCode == ' ' && state.equalsIgnoreCase("game_won")) {
+    initialiseGame(3, 0); // resets lives and score
+    levelOne = true;
+    levelTwo = false;
     state = "loading";
     startTime = millis();
   }
