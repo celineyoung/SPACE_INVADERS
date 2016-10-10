@@ -1,23 +1,43 @@
 Ship ship;
 Fleet fleet;
 Mothership mothership;
+
 ArrayList<Bullet> bullets = new ArrayList <Bullet>();
 ArrayList<Bomb> bombs = new ArrayList <Bomb>();
-int score;
-int lives;
-PImage title;
+
+boolean levelOne = true; 
+boolean levelTwo = false;
+int score;  
+int lives; // num lives of player
+
+// loading images and font
+PImage title; 
 PImage loading;
 PFont customFont;
+// winning animation
+PImage winning_invader;
+float x;
+float y;
+int step = 15;
+boolean reverse = false;
+
 String state;
 int startTime = millis();
-boolean levelOne = true;
-boolean levelTwo = false;
+
 
 void setup() {
   size(1000, 800);
+  // loading images and fonts
   customFont = createFont("ca.ttf", 32); // loading custom font
   title = loadImage("sprites/title.png");
   loading = loadImage("sprites/loading.jpg");
+  winning_invader = loadImage("sprites/winning_inv.png");
+
+  // initialising variables
+  x = width/2;
+  y = height/3;
+
+  // current game state  
   state = "menu";
 }
 
@@ -35,17 +55,15 @@ void draw() {
   if (state.equalsIgnoreCase("game_over")) {
     gameOver();
   }
-  
-  if (state.equalsIgnoreCase("game_over")) {
+
+  if (state.equalsIgnoreCase("game_won")) {
     gameWon();
   } 
 
   if (state.equalsIgnoreCase("play")) {    
     if (isGameOver()) {
       state = "game_over";
-    }
-
-    if (finishedLevel() && levelOne) {
+    } else if (finishedLevel() && levelOne) {
       levelOne = false;
       levelTwo = true;
       initialiseGame(lives, score);
@@ -69,7 +87,7 @@ void draw() {
     ship.shoot(); // enables ship to shoot
     if (frameCount%20 == 0 && levelOne == true) { // level one
       ship.canShoot = true;
-    } else if (frameCount%40 == 0 && levelTwo == true) { // level one
+    } else if (frameCount%30 == 0 && levelTwo == true) { // level one
       ship.canShoot = true;
     }
 
@@ -128,7 +146,6 @@ void generateMothership() {
   if (mothership == null) {
     if (Math.random() > 0.6) {
       int perk = (int)(random(5));
-      print("Perk: " + perk);
       mothership = new Mothership(perk);
     }
   }
@@ -208,5 +225,32 @@ void gameOver() {
 // ------- GAME WON SCREEN -------
 
 void gameWon() {
-  //winning animation
+  // winning animation
+  textFont(customFont);
+  textAlign(CENTER, CENTER);
+  textSize(100);
+  fill(170, 150, 255);
+  text("You Win!", width/2, height/2);
+  fill(100, 50, 200);
+  textSize(20);
+  text ("Press space to restart", width/2, 2*height/3);
+
+  int wd = 200;
+  int ht = 200;
+  imageMode(CENTER);
+  image(winning_invader, x, y, wd, ht);
+
+  if (frameCount%20 == 0) {
+    if  (x + wd/2 > width) {
+      reverse = true;
+    } else if (x - wd/2 < 0) {
+      reverse = false;
+    }
+
+    if (reverse) {
+      x -= step;
+    } else {
+      x += step;
+    }
+  }
 }
