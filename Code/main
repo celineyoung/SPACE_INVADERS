@@ -10,6 +10,8 @@ PImage loading;
 PFont customFont;
 String state;
 int startTime = millis();
+boolean levelOne = true;
+boolean levelTwo = false;
 
 void setup() {
   size(1000, 800);
@@ -33,10 +35,24 @@ void draw() {
   if (state.equalsIgnoreCase("game_over")) {
     gameOver();
   }
+  
+  if (state.equalsIgnoreCase("game_over")) {
+    gameWon();
+  } 
 
   if (state.equalsIgnoreCase("play")) {    
     if (isGameOver()) {
       state = "game_over";
+    }
+
+    if (finishedLevel() && levelOne) {
+      levelOne = false;
+      levelTwo = true;
+      initialiseGame(lives, score);
+      startTime = millis();
+      state = "loading";
+    } else if (finishedLevel() && levelTwo) {
+      state = "game_won";
     }
 
     displayInfoBar();
@@ -51,20 +67,17 @@ void draw() {
     ship.display();
     ship.move(); // enables ship movement
     ship.shoot(); // enables ship to shoot
-    if (frameCount%20 == 0) {
+    if (frameCount%20 == 0 && levelOne == true) { // level one
+      ship.canShoot = true;
+    } else if (frameCount%40 == 0 && levelTwo == true) { // level one
       ship.canShoot = true;
     }
+
     if (mothership != null) {
       mothership.display();
       if (mothership.collide()) {
         mothership.findPerk();
-        if (mothership.perk != 1 || mothership.perk != 3) {
-          mothership = null;
-        } else {
-          if (ship.perkTimer + 250 > millis()) {
-            mothership = null;
-          }
-        }
+        mothership = null;
       } else if (mothership.outOfWindow()) { // deleting mothership once it has disappeared
         mothership = null;
       }
@@ -73,9 +86,6 @@ void draw() {
       generateMothership();
     }
   }
-}
-
-void findState () {
 }
 
 // ------- METHODS FOR PLAYING GAME -------
@@ -131,20 +141,27 @@ boolean isGameOver() {
   return false;
 }
 
-// ------- GAME OVER SCREEN -------
+boolean finishedLevel() {
+  for (int r = 0; r < fleet.invaders.length; r++) {
+    for (int c = 0; c < fleet.invaders[0].length; c++) {
+      if (fleet.invaders[r][c] != null) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
 
-void gameOver() {
-  // sets all objects to null
-  ship = null;
-  mothership = null;
-  fleet = null;
+// ------- INITIALISATION -------
 
-  textSize(100);
-  fill(255);
-  textAlign(CENTER, CENTER);
-  text("Game Over!", width/2, height/2);
-  textSize(20);
-  text ("Press space to restart", width/2, 2*height/3);
+void initialiseGame(int lives, int score) {
+  bullets.clear();
+  bombs.clear();
+  ship = new Ship(width/2);
+  fleet = new Fleet();
+  fleet.create();
+  this.lives = lives;
+  this.score = score;
 }
 
 // ------- MENU -------
@@ -163,7 +180,6 @@ void displayMenu() {
 // ------- LOADING SCREEN --------
 
 void displayLoading() {
-  initialiseGame();
   imageMode(CENTER);
   image(loading, width/2, height/2);
   if (millis() > startTime + 2500) {
@@ -172,14 +188,25 @@ void displayLoading() {
   }
 }
 
-// ------- INITIALISATION -------
 
-void initialiseGame() {
-  bullets.clear();
-  bombs.clear();
-  ship = new Ship(width/2);
-  fleet = new Fleet();
-  fleet.create();
-  lives = 3;
-  score = 0;
+// ------- GAME OVER SCREEN -------
+
+void gameOver() {
+  // sets all objects to null
+  ship = null;
+  mothership = null;
+  fleet = null;
+
+  textSize(100);
+  fill(255);
+  textAlign(CENTER, CENTER);
+  text("Game Over!", width/2, height/2);
+  textSize(20);
+  text ("Press space to restart", width/2, 2*height/3);
+}
+
+// ------- GAME WON SCREEN -------
+
+void gameWon() {
+  //winning animation
 }
