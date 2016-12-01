@@ -1,6 +1,6 @@
 public class Mothership {
   int perk;
-  PImage img = loadImage("sprites/mothership.png");
+  PImage img = loadImage("mothership.png");
   int x = 0; 
   int y = 40;
   int speed = 2;
@@ -12,9 +12,9 @@ public class Mothership {
   }
 
   void display() {
-      imageMode(CORNER);
-      image(img, x, y, wd, ht);
-      x += speed;
+    imageMode(CORNER);
+    image(img, x, y, wd, ht);
+    x += speed;
   }
 
   boolean collide() {
@@ -37,17 +37,46 @@ public class Mothership {
   }
 
   void findPerk() {
+    println("Perk: " + perk);
     ship.perkTimer = millis();
     if (perk == 0) {
+      ship.displayingPoints = true;
+      ship.setPointsAmount(250);
+      ship.setTextX(mothership.getX() + mothership.getWidth()/2);
+      ship.setTextY(mothership.getY() + mothership.getHeight()/2);      
       score += 250;
     } else if (perk == 1) {
       ship.shrink();
     } else if (perk == 2) { 
       ship.newGun = true;
     } else if (perk == 3) {
+      ship.displayingPoints = true;
+      ship.setPointsAmount(150);
+      ship.setTextX(mothership.getX() + mothership.getWidth()/2);
+      ship.setTextY(mothership.getY() + mothership.getHeight()/2);
       score += 150;
     } else if (perk == 4) {
       ship.faster();
     }
+  }
+
+  int getPerk() {
+    return perk;
+  }
+
+  int getX() {
+    return x;
+  }
+
+  int getY() {
+    return y;
+  }
+
+  int getWidth() {
+    return wd;
+  }
+
+  int getHeight() {
+    return ht;
   }
 }
