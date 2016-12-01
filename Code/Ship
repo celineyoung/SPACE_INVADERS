@@ -1,29 +1,82 @@
 public class Ship {
   float x;
-  float vx = 0;
-  float shipWd = width/15; // widest part of ship
   float y = height - 60;
-  float ht1 = height/70;
-  float ht2 = 2*ht1/3;
-  float ht3 = 4*ht1/9;
+  float vx = 0;
+  int initial_speed = 5;
+  int velocity = initial_speed;
+
+  float initialWd = width/15; // widest part of ship
+  float initialHt = height/70;
+  float wd1 = initialWd; 
+  float wd2;
+  float wd3;
+  float ht1 = initialHt;
+  float ht2;
+  float ht3;
+
+  // flags for movement
   boolean moveLeft = false;
   boolean moveRight = false;
   boolean canShoot = true;
   boolean shooting = false;
 
+  // flags for perks
+  boolean shrink = false;
+  boolean newGun = false;
+  boolean doubleSpeed = false;
+  boolean displayingPoints = false;
+
+  int pointsAmount = 0;
+  int textX = 0;
+  int textY = 0;
+
+  int perkTimer;
+
   Ship(float x) {
     this.x = x;
   }
 
-  void drawShip() {
+  void display() {
+    // calculates size of ship
+    wd2 = 2*wd1/3;
+    wd3 = 4*wd1/9;
+    ht2 = 2*ht1/3;
+    ht3 = 4*ht1/9;
+
     rectMode(CENTER);
     stroke(255);
     fill(255);
     // drawing the ship object with three tiers and a triangle on top
-    rect(x, y, shipWd, ht1);
-    rect(x, y - ht2, 2*shipWd/3, ht2);
-    rect(x, y - ht2 - ht3, 4*shipWd/9, ht3);
-    triangle(x - 2*shipWd/9, y - 2*ht1/3, x, y - ht2 - ht3 - ht1, x + 2*shipWd/9, y - 2*ht1/3);
+    rect(x, y, wd1, ht1);
+    rect(x, y - ht2, wd2, ht2);
+    rect(x, y - ht2 - ht3, wd3, ht3);
+    triangle(x - 2*wd1/9, y - 2*ht1/3, x, y - ht2 - ht3 - ht1, x + 2*wd1/9, y - 2*ht1/3);
+
+    if (collide()) {
+      lives--;
+    }
+    if (millis() >= perkTimer + 2000) {
+      if (displayingPoints) { // stops displaying score
+        displayingPoints = false;
+      }
+    }
+    if (millis() >= perkTimer + 4000) {
+      // changes ship back to original size
+      if (shrink) {
+        wd1 = initialWd;
+        ht1 = initialHt;
+        shrink = false;
+      } else if (newGun) { // back to single bullet firing
+        newGun = false;
+      } else if (doubleSpeed) { // changes back to original speed
+        doubleSpeed = false;
+        velocity = initial_speed;
+      }
+    }
+
+    if (displayingPoints) {
+      displayPoints(pointsAmount, textX, textY);
+    }
   }
 
   float getY() { // returns the top of ship
@@ -33,26 +86,88 @@ public class Ship {
   void move() {
     // determines which way the ship should move
     if (moveLeft) {
-      vx = -5;
+      vx = -velocity;
     } else if (moveRight) {
-      vx = 5;
+      vx = velocity;
     } else if (moveLeft == false && moveRight == false) {
       vx = 0;
     }
     // moves ship 
     x += vx;
     // constricts ship to only move within window 
-    if (x - shipWd/2 < 0) {
-      x = shipWd/2;
-    } else if (x + shipWd/2 > width) {
-      x = width - shipWd/2;
+    if (x - wd1/2 < 0) {
+      x = wd1/2;
+    } else if (x + wd1/2 > width) {
+      x = width - wd1/2;
     }
   }
 
   void shoot() {
     if (shooting && canShoot) {
-      bullets.add(new Bullet(x));
+      // normal gun
+      Bullet b = new Bullet(x);
+      bullets.add(b);
+      // shoots three bullets at once
+      if (newGun == true) {
+        bullets.add(new Bullet(x - 2*b.wd));
+        bullets.add(new Bullet(x + 2*b.wd));
+      }
       canShoot = false;
     }
+  }
+  // collision detection with invaders' bombs
+  boolean collide() {
+    for (int i = 0; i < bombs.size(); i++) {
+      Bomb bomb = bombs.get(i);
+      // first rectangle component of ship
+      if (bomb.x >= (x - wd1/2) && (bomb.x + bomb.wd/2) <= (x + wd1/2) && (bomb.y + bomb.ht) >= (y - ht1/2) && bomb.y <= (y + ht1/2)) { 
+        bombs.remove(i);
+        return true;
+        // second rectangle component of ship
+      } else if (bomb.x >= (x - wd2/2) && (bomb.x + bomb.wd/2) <= (x + wd2/2) && (bomb.y + bomb.ht) >= (y - ht2/2) && bomb.y <= (y + ht2/2)) { 
+        bombs.remove(i);
+        return true;
+        // third rectangle component of ship
+      } else if (bomb.x >= (x - wd3/2) && (bomb.x + bomb.wd/2)<= (x + wd3/2) && (bomb.y + bomb.ht) >= (y - ht3/2) && bomb.y <= (y + ht3/2)) { 
+        bombs.remove(i);
+        return true;
+      }
+    }
+    return false;
+  }
+  // makes ship smaller
+  void shrink() {
+    if (shrink != true) {
+      shrink = true;
+      wd1 = wd1/2;
+      ht1 = ht1/2;
+    }
+  }
+
+  void faster() {
+    if (doubleSpeed != true) {
+      doubleSpeed = true;
+      velocity = 2*initial_speed;
+    }
+  }
+
+  void displayPoints(int numPoints, int currentX, int currentY) {
+    textFont(customFont);
+    textAlign(CENTER, CENTER);
+    textSize(30);
+    fill(170, 150, 255);
+    text(numPoints, currentX, currentY);
+  }
+
+  void setPointsAmount(int amount) {
+    pointsAmount = amount;
+  }
+
+  void setTextX(int x) {
+    textX = x;
+  }
+
+  void setTextY(int y) {
+    textY = y;
   }
 }
