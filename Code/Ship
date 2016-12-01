@@ -24,7 +24,12 @@ public class Ship {
   boolean shrink = false;
   boolean newGun = false;
   boolean doubleSpeed = false;
-  
+  boolean displayingPoints = false;
+
+  int pointsAmount = 0;
+  int textX = 0;
+  int textY = 0;
+
   int perkTimer;
 
   Ship(float x) {
@@ -50,18 +55,27 @@ public class Ship {
     if (collide()) {
       lives--;
     }
-    // changes ship back to original size
+    if (millis() >= perkTimer + 2000) {
+      if (displayingPoints) { // stops displaying score
+        displayingPoints = false;
+      }
+    }
     if (millis() >= perkTimer + 4000) {
+      // changes ship back to original size
       if (shrink) {
         wd1 = initialWd;
         ht1 = initialHt;
         shrink = false;
-      } else if (newGun) {
+      } else if (newGun) { // back to single bullet firing
         newGun = false;
-      } else if (doubleSpeed) {
+      } else if (doubleSpeed) { // changes back to original speed
         doubleSpeed = false;
         velocity = initial_speed;
       }
+    }
+
+    if (displayingPoints) {
+      displayPoints(pointsAmount, textX, textY);
     }
   }
 
@@ -135,5 +149,25 @@ public class Ship {
       doubleSpeed = true;
       velocity = 2*initial_speed;
     }
+  }
+
+  void displayPoints(int numPoints, int currentX, int currentY) {
+    textFont(customFont);
+    textAlign(CENTER, CENTER);
+    textSize(30);
+    fill(170, 150, 255);
+    text(numPoints, currentX, currentY);
+  }
+
+  void setPointsAmount(int amount) {
+    pointsAmount = amount;
+  }
+
+  void setTextX(int x) {
+    textX = x;
+  }
+
+  void setTextY(int y) {
+    textY = y;
   }
 }
